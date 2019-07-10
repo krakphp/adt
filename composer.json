@@ -1,0 +1,29 @@
+{
+    "name": "krak/adt",
+    "description": "Algebraic Data Types in PHP",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+       "functional",
+       "adt",
+       "algebraic-data-types",
+       "enum"
+   ],
+    "authors": [
+        {
+            "name": "RJ Garcia",
+            "email": "rj@bighead.net"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Krak\\ADT\\": "src"
+        }
+    },
+    "require-dev": {
+        "peridot-php/leo": "^1.6",
+        "peridot-php/peridot": "^1.19"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

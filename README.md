@@ -15,6 +15,10 @@ Install with composer at `krak/adt`
 
 use Krak\ADT\ADT;
 
+/**
+ * @method static Upc upc(int $numberSystem, int $manufacturer, int $product, int $check)
+ * @method static QrCode qrCode(string $productCode)
+ */
 abstract class Barcode extends ADT {
     public static function types(): array {
         return [Upc::class, QrCode::class];
@@ -61,7 +65,27 @@ $threeOrFour = $barcode->match([
     Upc::class => 3,
     QrCode::class => 4,
 ]);
+
+// static constructors
+$qrCode = Barcode::qrCode('abc123');
 ```
+
+### Autoloading Concerns
+
+With the example above, if you try to create a QrCode or Upc before ever referencing the Barcode class, you'll likely get a file not found when using composer's psr-4 autoloader.
+
+You can get around this a few ways:
+
+1. Utilize class mapping
+2. Include the enum class file in the composer autoload.files section (something like [php-inc](https://github.com/krakphp/php-inc) could make that easier)
+3. Utilize static constructors provided by the base ADT class:
+
+    ```php
+    <?php
+
+    $upc = Barcode::Upc(1, 2, 3, 4);
+    $qrCode = Barcode::QrCode('abc123');
+    ```
 
 ## Tests
 

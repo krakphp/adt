@@ -73,4 +73,13 @@ describe('ADT', function() {
         ], 2);
         expect($res)->equal(2);
     });
+    it('provides static magic constructors', function() {
+        $qrCode = Barcode::qrCode('abc123');
+        expect($qrCode instanceof QrCode)->equal(true);
+    });
+    it('will throw if static constructor is wrong', function() {
+        expect(function() {
+            Barcode::bad();
+        })->throw(\BadMethodCallException::class, 'Method constructor bad does not exist for this ADT. Valid static constructors are: upc, qrCode');
+    });
 });

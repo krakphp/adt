@@ -4,6 +4,8 @@ namespace Krak\ADT;
 
 abstract class ADT
 {
+    private static $staticConstructorMethodCache = [];
+
     /** return the type names of the different instances */
     abstract public static function types(): array;
 
@@ -30,6 +32,31 @@ abstract class ADT
         }
 
         return $match;
+    }
+
+    public static function __callStatic(string $name, array $arguments) {
+        self::initStatitConstructorMethodCache();
+        if (!isset(self::$staticConstructorMethodCache[$name])) {
+            throw new \BadMethodCallException("Method constructor {$name} does not exist for this ADT. Valid static constructors are: " . implode(', ', array_keys(self::$staticConstructorMethodCache)));
+        }
+
+        $className = self::$staticConstructorMethodCache[$name];
+        return new $className(...$arguments);
+    }
+
+    private static function initStatitConstructorMethodCache(): void {
+        if (self::$staticConstructorMethodCache) {
+            return;
+        }
+
+        foreach (static::types() as $type) {
+            $finalNsSep = strrpos($type, '\\');
+            if ($finalNsSep === false) {
+                self::$staticConstructorMethodCache[lcfirst($type)] = $type;
+            } else {
+                self::$staticConstructorMethodCache[lcfirst(substr($type, $finalNsSep + 1))] = $type;
+            }
+        }
     }
 
     private function assertTypeIsRegistered(string $type) {

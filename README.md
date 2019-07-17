@@ -83,8 +83,8 @@ You can get around this a few ways:
     ```php
     <?php
 
-    $upc = Barcode::Upc(1, 2, 3, 4);
-    $qrCode = Barcode::QrCode('abc123');
+    $upc = Barcode::upc(1, 2, 3, 4);
+    $qrCode = Barcode::qrCode('abc123');
     ```
 
 ## Tests

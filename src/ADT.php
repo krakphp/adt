@@ -36,25 +36,28 @@ abstract class ADT
 
     public static function __callStatic(string $name, array $arguments) {
         self::initStatitConstructorMethodCache();
-        if (!isset(self::$staticConstructorMethodCache[$name])) {
-            throw new \BadMethodCallException("Method constructor {$name} does not exist for this ADT. Valid static constructors are: " . implode(', ', array_keys(self::$staticConstructorMethodCache)));
+        $class = get_called_class();
+        if (!isset(self::$staticConstructorMethodCache[$class][$name])) {
+            throw new \BadMethodCallException("Method constructor {$name} does not exist for this ADT. Valid static constructors are: " . implode(', ', array_keys(self::$staticConstructorMethodCache[$class])));
         }
 
-        $className = self::$staticConstructorMethodCache[$name];
+        $className = self::$staticConstructorMethodCache[$class][$name];
         return new $className(...$arguments);
     }
 
     private static function initStatitConstructorMethodCache(): void {
-        if (self::$staticConstructorMethodCache) {
+        $class = get_called_class();
+
+        if (isset(self::$staticConstructorMethodCache[$class])) {
             return;
         }
 
         foreach (static::types() as $type) {
             $finalNsSep = strrpos($type, '\\');
             if ($finalNsSep === false) {
-                self::$staticConstructorMethodCache[lcfirst($type)] = $type;
+                self::$staticConstructorMethodCache[$class][lcfirst($type)] = $type;
             } else {
-                self::$staticConstructorMethodCache[lcfirst(substr($type, $finalNsSep + 1))] = $type;
+                self::$staticConstructorMethodCache[$class][lcfirst(substr($type, $finalNsSep + 1))] = $type;
             }
         }
     }

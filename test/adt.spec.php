@@ -30,6 +30,17 @@ final class QrCode extends Barcode {
     }
 }
 
+abstract class Direction extends ADT {
+    public static function types(): array {
+        return [North::class, South::class, East::class, West::class];
+    }
+}
+
+final class North extends Direction {}
+final class South extends Direction {}
+final class East extends Direction {}
+final class West extends Direction {}
+
 final class NotRegistered extends Barcode {}
 
 describe('ADT', function() {
@@ -81,5 +92,11 @@ describe('ADT', function() {
         expect(function() {
             Barcode::bad();
         })->throw(\BadMethodCallException::class, 'Method constructor bad does not exist for this ADT. Valid static constructors are: upc, qrCode');
+    });
+    it('can support multiple types of ADT static constructors', function() {
+        $dir = Direction::north();
+        $barCode = BarCode::qrCode('foo');
+        expect(get_class($dir))->equal(North::class);
+        expect(get_class($barCode))->equal(QrCode::class);
     });
 });
